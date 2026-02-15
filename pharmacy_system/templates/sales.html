@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Sales Reports</h3>
+
+<div class="card">
+
+<div class="card-body p-0">
+
+<table class="table table-striped mb-0">
+
+<thead>
+<tr>
+<th>Medicine</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for r in records %}
+<tr>
+<td>{{ r.medicine_name }}</td>
+<td>{{ r.quantity }}</td>
+<td>₹{{ r.total_price }}</td>
+<td>{{ r.date.strftime('%d-%m-%Y %H:%M') }}</td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+{% endblock %}

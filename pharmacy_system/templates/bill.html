@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Billing</h3>
+
+<div class="row">
+
+<!-- Add Item -->
+<div class="col-md-5">
+
+<div class="card mb-3">
+
+<div class="card-body">
+
+<h5>Add Item</h5>
+
+<form method="POST">
+
+<div class="mb-3">
+
+<label>Medicine</label>
+
+<select name="medicine" class="form-select">
+
+{% for m in medicines %}
+<option value="{{ m.id }}">
+{{ m.name }} (₹{{ m.price }})
+</option>
+{% endfor %}
+
+</select>
+
+</div>
+
+
+<div class="mb-3">
+
+<label>Quantity</label>
+
+<input type="number" name="qty"
+class="form-control" required>
+
+</div>
+
+
+<button class="btn btn-primary w-100">
+Add to Cart
+</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+
+<!-- Cart -->
+<div class="col-md-7">
+
+<div class="card">
+
+<div class="card-body">
+
+<h5>Cart</h5>
+
+<table class="table">
+
+<tr>
+<th>Medicine</th>
+<th>Qty</th>
+<th>Price</th>
+<th>Total</th>
+</tr>
+
+{% for item in cart %}
+
+<tr>
+<td>{{ item.name }}</td>
+<td>{{ item.qty }}</td>
+<td>₹{{ item.price }}</td>
+<td>₹{{ item.price * item.qty }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+
+<h5 class="text-end">
+Total: ₹{{ total }}
+</h5>
+
+
+{% if cart %}
+
+<a href="/finalize_bill"
+class="btn btn-success w-100">
+Generate Final Bill
+</a>
+
+{% endif %}
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

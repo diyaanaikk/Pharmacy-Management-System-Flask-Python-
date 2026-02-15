@@ -1,0 +1,85 @@
+body {
+    background: #f4f6f9;
+    font-family: "Segoe UI", sans-serif;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+    background: #1e293b;
+    min-height: 100vh;
+    color: white;
+}
+
+.sidebar h4 {
+    color: #38bdf8;
+}
+
+.sidebar .nav-link {
+    color: #cbd5e1;
+    padding: 12px;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+.sidebar .nav-link:hover {
+    background: #334155;
+    color: white;
+}
+
+
+/* Main */
+
+.main {
+    background: #f4f6f9;
+}
+
+
+/* Topbar */
+
+.topbar {
+    background: white;
+    padding: 15px 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-weight: 600;
+}
+
+
+/* Cards */
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.stat-card h3 {
+    color: #0d6efd;
+}
+
+
+/* Tables */
+
+.table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    background: #0d6efd;
+    color: white;
+}
+
+
+/* Forms */
+
+.form-control {
+    border-radius: 8px;
+}
+
+.btn-primary {
+    border-radius: 8px;
+}

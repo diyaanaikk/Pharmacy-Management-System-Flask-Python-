@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">💊 Pharmacy Dashboard</h3>
+
+
+<!-- Alerts -->
+
+{% if expired %}
+<div class="alert alert-danger">
+⚠ Expired Medicines:
+{{ expired | join(', ') }}
+</div>
+{% endif %}
+
+
+<!-- Stats -->
+
+<div class="row mb-4">
+
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Total Medicines</h6>
+<h3>{{ medicines | length }}</h3>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Low Stock</h6>
+<h3>
+{{ medicines | selectattr("quantity","lt",10) | list | length }}
+</h3>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Expired</h6>
+<h3>{{ expired | length }}</h3>
+</div>
+</div>
+
+</div>
+
+
+<!-- Search + Filters -->
+
+<div class="row g-2 mb-4 align-items-end">
+
+
+<!-- Live Search -->
+
+<div class="col-md-3">
+
+<input type="text"
+id="searchBox"
+class="form-control"
+placeholder="🔍 Search medicine...">
+
+</div>
+
+
+<!-- Supplier -->
+
+<div class="col-md-3">
+
+<select id="supplierFilter"
+class="form-select">
+
+<option value="all">All Suppliers</option>
+
+{% for m in medicines | unique(attribute='supplier') %}
+<option value="{{ m.supplier }}">
+{{ m.supplier }}
+</option>
+{% endfor %}
+
+</select>
+
+</div>
+
+
+<!-- Stock -->
+
+<div class="col-md-2">
+
+<select id="stockFilter"
+class="form-select">
+
+<option value="">All Stock</option>
+<option value="low">Low Stock (&lt;10)</option>
+
+</select>
+
+</div>
+
+
+<!-- Expiry -->
+
+<div class="col-md-2">
+
+<select id="expiryFilter"
+class="form-select">
+
+<option value="">All Expiry</option>
+<option value="expired">Expired</option>
+
+</select>
+
+</div>
+
+
+<!-- Reset -->
+
+<div class="col-md-2 d-grid">
+
+<button class="btn btn-secondary"
+onclick="resetFilters()">
+🔄 Reset
+</button>
+
+</div>
+
+</div>
+
+
+<!-- Table -->
+
+<div class="card">
+
+<div class="card-body p-0">
+
+<table class="table table-hover mb-0">
+
+<thead class="table-light">
+
+<tr>
+<th>Name</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Expiry</th>
+<th>Supplier</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="medicineTable">
+
+{% for m in medicines %}
+
+<tr data-name="{{ m.name }}"
+    data-supplier="{{ m.supplier }}"
+    data-stock="{{ m.quantity }}"
+    data-expiry="{{ m.expiry }}">
+
+<td>{{ m.name }}</td>
+
+<td>₹{{ m.price }}</td>
+
+<td>
+
+{% if m.quantity < 10 %}
+<span class="text-danger fw-bold">
+{{ m.quantity }}
+</span>
+{% else %}
+{{ m.quantity }}
+{% endif %}
+
+</td>
+
+<td>{{ m.expiry }}</td>
+
+<td>{{ m.supplier }}</td>
+
+<td>
+
+<a href="/delete/{{ m.id }}"
+class="btn btn-sm btn-danger">
+🗑
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+
+
+<!-- JavaScript -->
+
+<script>
+
+const searchBox = document.getElementById("searchBox");
+const supplierFilter = document.getElementById("supplierFilter");
+const stockFilter = document.getElementById("stockFilter");
+const expiryFilter = document.getElementById("expiryFilter");
+
+const rows = document.querySelectorAll("#medicineTable tr");
+
+
+// 🔍 Live Filtering
+
+function filterTable(){
+
+const name = searchBox.value.toLowerCase();
+const supplier = supplierFilter.value;
+const stock = stockFilter.value;
+const expiry = expiryFilter.value;
+
+rows.forEach(row => {
+
+let show = true;
+
+const rowName = row.dataset.name.toLowerCase();
+const rowSupplier = row.dataset.supplier;
+const rowStock = parseInt(row.dataset.stock);
+const rowExpiry = row.dataset.expiry;
+
+
+// Name
+if(!rowName.includes(name)) show = false;
+
+
+// Supplier
+if(supplier !== "all" && rowSupplier !== supplier)
+show = false;
+
+
+// Stock
+if(stock === "low" && rowStock >= 10)
+show = false;
+
+
+// Expiry
+if(expiry === "expired"){
+
+let today = new Date().toISOString().split("T")[0];
+
+if(rowExpiry >= today)
+show = false;
+
+}
+
+
+row.style.display = show ? "" : "none";
+
+});
+
+}
+
+
+// Events
+
+searchBox.addEventListener("keyup", filterTable);
+supplierFilter.addEventListener("change", filterTable);
+stockFilter.addEventListener("change", filterTable);
+expiryFilter.addEventListener("change", filterTable);
+
+
+
+// 🔄 Reset
+
+function resetFilters(){
+
+searchBox.value = "";
+supplierFilter.value = "all";
+stockFilter.value = "";
+expiryFilter.value = "";
+
+filterTable();
+
+}
+
+</script>
+
+
+{% endblock %}
